@@ -79,5 +79,57 @@ async function getLiveSchedule() {
   });
 }
 
+const STORAGE_KEY = "youtube_channels";
+function getChannels() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+function saveChannels(channels) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(channels));
+}
+//チャンネルを追加
+function addChannel(channelId) {
+  const channels = getChannels();
+  if (!channels.includes(channelId)) {
+    channels.push(channelId);
+    saveChannels(channels);
+  }
+}
+//チャンネルを削除
+function removeChannel(channelId) {
+  const channels = getChannels().filter(id => id !== channelId);
+  saveChannels(channels);
+}
+
+document.getElementById("addBtn").addEventListener("click", () => {
+  const input = document.getElementById("channelInput");
+  if (!input.value) return;
+
+  addChannel(input.value.trim());
+  input.value = "";
+  renderChannelList();
+});
+
+function renderChannelList() {
+  const list = document.getElementById("channelList");
+  list.innerHTML = "";
+
+  getChannels().forEach(id => {
+    const li = document.createElement("li");
+    li.textContent = id;
+
+    const del = document.createElement("button");
+    del.textContent = "削除";
+    del.onclick = () => {
+      removeChannel(id);
+      renderChannelList();
+    };
+
+    li.appendChild(del);
+    list.appendChild(li);
+  });
+}
+
+renderChannelList();
+
 // 実行
 getLiveSchedule();
