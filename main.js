@@ -244,10 +244,21 @@ function createICS(live) {
 function downloadICS(live) {
   const ics = createICS(live);
 
-  const blob = new Blob([ics], { type: "text/calendar" });
+  const blob = new Blob([ics], {
+    type: "text/calendar;charset=utf-8"
+  });
+
   const url = URL.createObjectURL(blob);
 
-  window.location.href = url;
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "youtube_live.ics";
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
 }
 
 
