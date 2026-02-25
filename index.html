@@ -15,10 +15,16 @@
 
 <body>
 <h2>YouTube 配信予定</h2>
-<div id="list">読み込み中...</div>
+
 <h3>チャンネル追加</h3>
-<input id="channelInput" placeholder="@username or channelId">
+<input id="channelInput" placeholder="チャンネル名で検索">
+<button id="searchBtn">検索</button>
+<ul id="searchResult"></ul>
 <button id="addBtn">追加</button>
+<h4>配信予定一覧</h4>
+<div id="liveList"></div>
+<button onclick="fetchAllUpcomingLives()">更新</button>
+
 
 <ul id="channelList"></ul>
 
