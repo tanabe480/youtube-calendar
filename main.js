@@ -247,12 +247,7 @@ function downloadICS(live) {
   const blob = new Blob([ics], { type: "text/calendar" });
   const url = URL.createObjectURL(blob);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "youtube_live.ics";
-  a.click();
-
-  URL.revokeObjectURL(url);
+  window.location.href = url;
 }
 
 
