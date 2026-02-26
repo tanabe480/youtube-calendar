@@ -177,6 +177,7 @@ async function fetchUpcomingByChannel(channelId) {
     .filter(v => v.liveStreamingDetails?.scheduledStartTime)
     .map(video => ({
       title: video.snippet.title,
+      channelTitle: video.snippet.channelTitle,
       videoId: video.id,
       startTime: video.liveStreamingDetails.scheduledStartTime
     }));
