@@ -227,16 +227,16 @@ function createICS(live) {
     date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
   const icsContent =
-    `BEGIN:VCALENDAR
-    VERSION:2.0
-    BEGIN:VEVENT
-    SUMMARY:${live.title}
-    DTSTART:${formatDate(start)}
-    DTEND:${formatDate(end)}
-    DESCRIPTION:YouTube Live
-    URL:https://www.youtube.com/watch?v=${live.videoId}
-    END:VEVENT
-    END:VCALENDAR`;
+`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${live.title}
+DTSTART:${formatDate(start)}
+DTEND:${formatDate(end)}
+DESCRIPTION:YouTube Live
+URL:https://www.youtube.com/watch?v=${live.videoId}
+END:VEVENT
+END:VCALENDAR`;
 
   return icsContent;
 }
