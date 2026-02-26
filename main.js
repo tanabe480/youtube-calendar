@@ -234,7 +234,6 @@ BEGIN:VEVENT
 SUMMARY:${live.title}
 DTSTART:${formatDate(start)}
 DTEND:${formatDate(end)}
-DESCRIPTION:YouTube Live
 DESCRIPTION:${live.channelTitle}
 URL:https://www.youtube.com/watch?v=${live.videoId}
 END:VEVENT
