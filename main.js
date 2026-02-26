@@ -244,18 +244,12 @@ END:VCALENDAR`;
 function downloadICS(live) {
   const ics = createICS(live);
 
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
+  // iPhone対応：data URLで直接開く
+  const url =
+    "data:text/calendar;charset=utf-8," +
+    encodeURIComponent(ics);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "youtube_live.ics";
-
-  document.body.appendChild(a);
-  a.click();
-
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  window.location.href = url;
 }
 
 
