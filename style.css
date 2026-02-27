@@ -11,6 +11,7 @@ body {
                Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: #f5f6f8;
   color: #333;
+  padding: 12px;
 }
 
 /* =========================
@@ -20,6 +21,9 @@ body {
   max-width: 500px;
   margin: 0 auto;
   padding: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
 /* =========================
