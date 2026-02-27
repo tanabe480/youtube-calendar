@@ -1,0 +1,116 @@
+/* =========================
+   基本リセット
+========================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f5f6f8;
+  color: #333;
+}
+
+/* =========================
+   レイアウト
+========================= */
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* =========================
+   見出し
+========================= */
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+/* =========================
+   フォーム
+========================= */
+label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* 入力欄共通 */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px; /* iPhoneズーム防止 */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+/* メモ欄 */
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* =========================
+   ボタン
+========================= */
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background-color: #4285f4;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.05s ease, opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   カード表示（検索結果など）
+========================= */
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
+/* =========================
+   スマホ最適化
+========================= */
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 12px;
+  }
+}
+
+/* =========================
+   タブレット以上
+========================= */
+@media (min-width: 768px) {
+  .container {
+    margin-top: 30px;
+  }
+}
