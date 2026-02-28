@@ -151,26 +151,50 @@ button:active {
 ================================ */
 #searchResult li span,
 #channelList li span {
-  flex: 1;              /* ← 残り幅を全部使う */
+  flex: 1;              /* ← 余白を全部取る */
   font-size: 16px;
   font-weight: 500;
+  min-width: 0;         /* ← 超重要（文字折り返しバグ防止） */
 }
 
+
 /* ===============================
-   ボタン右寄せ＆サイズ調整
+   リスト内ボタン（サイズだけ変更）
 ================================ */
+#searchResult li button,
+#channelList li button {
+  width: auto;          /* ← 全幅ボタンを解除（重要） */
+  margin-top: 0;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+#searchResult button:active,
+#channelList button:active {
+  transform: scale(0.96);
+}
+
 #searchResult button,
 #channelList button {
   padding: 8px 14px;
   font-size: 14px;
   border-radius: 8px;
   border: none;
-  background: #ff4d4d;
   color: white;
   cursor: pointer;
+
+  flex-shrink: 0;   /* ← 押しつぶされない */
 }
 
-#searchResult button:active,
-#channelList button:active {
-  transform: scale(0.96);
+/* ===============================
+   リスト内ボタンだけ右寄せ化
+================================ */
+#searchResult li button,
+#channelList li button {
+  width: auto;          /* ← 全幅解除（最重要） */
+  margin-top: 0;        /* ← 上余白解除 */
+  margin-left: auto;    /* ← ★これが右寄せの本体 */
+  padding: 8px 14px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
