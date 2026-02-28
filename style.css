@@ -27,6 +27,15 @@ body {
 }
 
 /* =========================
+   リストの黒丸削除
+========================= */
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* =========================
    見出し
 ========================= */
 h1, h2, h3 {
@@ -104,10 +113,6 @@ button:active {
   body {
     font-size: 15px;
   }
-
-  .container {
-    padding: 12px;
-  }
 }
 
 /* =========================
@@ -117,4 +122,55 @@ button:active {
   .container {
     margin-top: 30px;
   }
+}
+
+/* ===============================
+   リスト共通レイアウト
+================================ */
+#searchResult li,
+#channelList li {
+  display: flex;
+  align-items: center;   /* ← 縦中央揃え（超重要） */
+  gap: 12px;
+  padding: 10px 0;
+}
+
+/* ===============================
+   チャンネルアイコン
+================================ */
+#searchResult img,
+#channelList img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;   /* 丸アイコン */
+  flex-shrink: 0;
+}
+
+/* ===============================
+   チャンネル名
+================================ */
+#searchResult li span,
+#channelList li span {
+  flex: 1;              /* ← 残り幅を全部使う */
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ===============================
+   ボタン右寄せ＆サイズ調整
+================================ */
+#searchResult button,
+#channelList button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  background: #ff4d4d;
+  color: white;
+  cursor: pointer;
+}
+
+#searchResult button:active,
+#channelList button:active {
+  transform: scale(0.96);
 }
