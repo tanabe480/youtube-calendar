@@ -80,7 +80,7 @@ button {
   font-size: 16px;
   font-weight: bold;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   background-color: #4285f4;
   color: white;
   cursor: pointer;
@@ -130,9 +130,9 @@ button:active {
 #searchResult li,
 #channelList li {
   display: flex;
-  align-items: center;   /* ← 縦中央揃え（超重要） */
+  align-items: center;
   gap: 12px;
-  padding: 10px 0;
+  padding: 6px 0;
 }
 
 /* ===============================
@@ -158,17 +158,6 @@ button:active {
 }
 
 
-/* ===============================
-   リスト内ボタン（サイズだけ変更）
-================================ */
-#searchResult li button,
-#channelList li button {
-  width: auto;          /* ← 全幅ボタンを解除（重要） */
-  margin-top: 0;
-  padding: 8px 14px;
-  font-size: 14px;
-}
-
 #searchResult button:active,
 #channelList button:active {
   transform: scale(0.96);
@@ -178,7 +167,7 @@ button:active {
 #channelList button {
   padding: 8px 14px;
   font-size: 14px;
-  border-radius: 8px;
+  border-radius: 14px;
   border: none;
   color: white;
   cursor: pointer;
@@ -191,10 +180,16 @@ button:active {
 ================================ */
 #searchResult li button,
 #channelList li button {
-  width: auto;          /* ← 全幅解除（最重要） */
-  margin-top: 0;        /* ← 上余白解除 */
-  margin-left: auto;    /* ← ★これが右寄せの本体 */
-  padding: 8px 14px;
+  width: auto;
+  min-width: 68px;
+  height: 36px;
+  margin-top: 0;
+  margin-left: auto;
+  padding: 0 14px;
   font-size: 14px;
   flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
