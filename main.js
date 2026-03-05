@@ -272,21 +272,28 @@ function renderLives(lives) {
 
   lives.forEach(live => {
     const start = new Date(live.startTime);
+    const week = ["日","月","火","水","木","金","土"];
+    const y = start.getFullYear();
+    const m = start.getMonth() + 1;
+    const d = start.getDate();
+    const w = week[start.getDay()];
+    const hh = start.getHours().toString().padStart(2, "0");
+    const mm = start.getMinutes().toString().padStart(2, "0");
 
+    const dateStr = `${y}年${m}月${d}日(${w}) ${hh}:${mm}`;
     const card = document.createElement("div");
     card.className = "liveCard";
 
     card.innerHTML = `
-      <div class="liveDate">${start.toLocaleString()}</div>
+      <div class="liveDate">${dateStr}</div>
       <div class="liveTitle">${live.title}</div>
       <div class="liveChannel">${live.channelTitle}</div>
 
-      <div class="liveActions">
         <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
           ▶ YouTubeで見る
         </a>
         <button class="calendarBtn">📅 カレンダー追加</button>
-      </div>
+
     `;
 
     card.querySelector(".calendarBtn")
