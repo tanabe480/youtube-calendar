@@ -202,7 +202,7 @@ button:active {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   padding: 12px 14px;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 /* 日時 */
@@ -240,5 +240,16 @@ button:active {
   padding: 10px 12px;
   font-size: 14px;
   border-radius: 10px;
+}
+
+.liveSchedule {
+  font-size: 18px;
+  margin: 10px 0 2px;
+}
+.addChannel {
+  font-size: 18px;
+}
+.addedChannel {
+  font-size: 18px;
 }
 
