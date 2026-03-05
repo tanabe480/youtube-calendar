@@ -222,7 +222,7 @@ button:active {
 .liveChannel {
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 /* 下の操作エリア */
@@ -236,7 +236,7 @@ button:active {
 /* カレンダーボタンをカード内用に調整（既存のボタンを壊さない） */
 .liveCard .calendarBtn {
   width: 100%;
-  margin-top: 0;
+  margin-top: 10px;
   padding: 10px 12px;
   font-size: 14px;
   border-radius: 10px;
