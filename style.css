@@ -193,3 +193,53 @@ button:active {
   align-items: center;
   justify-content: center;
 }
+
+/* ===============================
+   配信予定カード
+================================ */
+.liveCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+
+/* 日時 → 小さめ */
+.liveDate {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+/* 配信名 → 主役 */
+.liveTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* チャンネル名 → 補助情報 */
+.liveChannel {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+/* 下の操作エリア */
+.liveActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* カレンダーボタンをカード内用に調整（既存のボタンを壊さない） */
+.liveCard .calendarBtn {
+  width: auto;
+  margin-top: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
