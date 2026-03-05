@@ -273,24 +273,26 @@ function renderLives(lives) {
   lives.forEach(live => {
     const start = new Date(live.startTime);
 
-    const div = document.createElement("div");
-    div.className = "item";
+    const card = document.createElement("div");
+    card.className = "liveCard";
 
-    div.innerHTML = `
-      <p>📺 ${live.title}</p>
-      <p>🕒 ${start.toLocaleString()}</p>
-      <a href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank">
-        ▶ YouTubeで見る
-      </a>
-      <button class="calendarBtn">📅 カレンダー追加</button>
-      <hr>
+    card.innerHTML = `
+      <div class="liveDate">${start.toLocaleString()}</div>
+      <div class="liveTitle">${live.title}</div>
+      <div class="liveChannel">${live.channelTitle}</div>
+
+      <div class="liveActions">
+        <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
+          ▶ YouTubeで見る
+        </a>
+        <button class="calendarBtn">📅 カレンダー追加</button>
+      </div>
     `;
 
-    // カレンダーボタン処理
-    div.querySelector(".calendarBtn")
+    card.querySelector(".calendarBtn")
       .addEventListener("click", () => downloadICS(live));
 
-    area.appendChild(div);
+    area.appendChild(card);
   });
 }
 
