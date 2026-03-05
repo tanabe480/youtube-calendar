@@ -205,38 +205,37 @@ button:active {
   margin: 10px 0;
 }
 
-/* 日時 → 小さめ */
+/* 日時 */
 .liveDate {
-  font-size: 13px;
-  opacity: 0.8;
-  margin-bottom: 6px;
-}
-
-/* 配信名 → 主役 */
-.liveTitle {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
-/* チャンネル名 → 補助情報 */
+.liveTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* チャンネル名 */
 .liveChannel {
   font-size: 14px;
   font-weight: 500;
-  opacity: 0.9;
   margin-bottom: 10px;
 }
 
 /* 下の操作エリア */
 .liveActions {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 /* カレンダーボタンをカード内用に調整（既存のボタンを壊さない） */
 .liveCard .calendarBtn {
-  width: auto;
+  width: 100%;
   margin-top: 0;
   padding: 10px 12px;
   font-size: 14px;
