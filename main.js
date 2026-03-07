@@ -163,8 +163,9 @@ async function fetchUpcomingByChannel(channelId) {
   const searchRes = await fetch(searchUrl);
 
   if (!searchRes.ok) {
-    console.error("Search API error:", channelId);
-    return [];
+  const errorText = await searchRes.text();
+  console.error("Search API error:", searchRes.status, channelId, errorText);
+  return [];
   }
 
   const searchData = await searchRes.json();
