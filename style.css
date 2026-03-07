@@ -253,3 +253,45 @@ button:active {
   font-size: 18px;
 }
 
+.searchInputWrap {
+  position: relative;
+}
+
+#channelInput {
+  padding-right: 40px;
+}
+
+/* チャンネル検索欄 */
+.clearInputBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin: 0;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #c7c7cc; /* iOS薄グレー */
+  font-size: 18px;
+  font-weight: normal;
+
+  cursor: pointer;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearInputBtn:hover {
+  color: #8e8e93;
+}
+
+.clearInputBtn:active {
+  transform: translateY(-50%) scale(0.9);
+}
