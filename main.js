@@ -150,7 +150,6 @@ function renderChannelList() {
   });
 }
 
-
 /* ========= 配信予定取得 ========= */
 async function fetchUpcomingByChannel(channelId) {
 
@@ -209,7 +208,11 @@ async function fetchAllUpcomingLives() {
   const channels = getChannels();
 
   if (channels.length === 0) {
-    area.textContent = "チャンネルが登録されていません";
+    area.innerHTML = `
+    <div class="liveEmpty">
+      配信予定はありません
+    </div>
+    `;
     return;
   }
 
