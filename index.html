@@ -3,7 +3,6 @@
 
 <head>
   <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTube配信カレンダー</title>
   <link rel="manifest" href="manifest.json">
@@ -29,6 +28,9 @@
 <div class="scheduleHeader">
   <h4 class="liveSchedule">配信予定一覧</h4>
   <button class="refreshBtn" onclick="fetchAllUpcomingLives()">更新</button>
+</div>
+<div class="liveListBox">
+  <div id="liveList"></div>
 </div>
 <h5 class="addedChannel">登録済チャンネル</h5>
 
