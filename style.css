@@ -8,10 +8,42 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f6f8;
-  color: #333;
+               "Noto Sans JP", sans-serif;
+  background-color: #FFFFFF;
+  color: #3A3A3A;
   padding: 12px;
+}
+
+/* =========================
+   見出し
+========================= */
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+h2 {
+  display: inline-block;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1F3A5F;
+
+  padding: 1px 4px;
+  margin-bottom: 22px;
+
+  border-bottom: 2px solid #e5e7eb;
+}
+
+h3, h4, h5 {
+  color: #3A3A3A;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.liveSchedule,
+.addChannel,
+.addedChannel {
+  border-left: 4px solid #1F3A5F;
+  padding-left: 8px;
 }
 
 /* =========================
@@ -23,7 +55,7 @@ body {
   padding: 16px;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
 /* =========================
@@ -33,13 +65,6 @@ ul {
   list-style: none;
   padding-left: 0;
   margin-left: 0;
-}
-
-/* =========================
-   見出し
-========================= */
-h1, h2, h3 {
-  margin-top: 0;
 }
 
 /* =========================
@@ -58,10 +83,18 @@ select,
 textarea {
   width: 100%;
   padding: 12px;
-  font-size: 16px; /* iPhoneズーム防止 */
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #93a7c3;
+  box-shadow: 0 0 0 3px rgba(31, 58, 95, 0.12);
 }
 
 /* メモ欄 */
@@ -81,7 +114,7 @@ button {
   font-weight: bold;
   border: none;
   border-radius: 14px;
-  background-color: #4285f4;
+  background-color: #1F3A5F;
   color: white;
   cursor: pointer;
   transition: transform 0.05s ease, opacity 0.2s;
@@ -215,11 +248,12 @@ button:active {
    配信予定カード
 ================================ */
 .liveCard {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
   padding: 12px 14px;
   margin: 8px 0;
+  border: 1px solid #e5e7eb;
 }
 
 /* 日時 */
@@ -293,7 +327,7 @@ button:active {
 
   border: none;
   border-radius: 50%;
-  background: #ffffff;
+  background: #e5e7eb;
   color: #747474;
   font-size: 16px;
   font-weight: normal;
