@@ -268,19 +268,19 @@ button:active {
   top: 50%;
   transform: translateY(-50%);
 
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   margin: 0;
   padding: 0;
 
   border: none;
-  background: transparent;
-
-  color: #c7c7cc; /* iOS薄グレー */
-  font-size: 18px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #747474;
+  font-size: 16px;
   font-weight: normal;
-
+  line-height: 1;
   cursor: pointer;
 
   display: none;
@@ -289,9 +289,9 @@ button:active {
 }
 
 .clearInputBtn:hover {
-  color: #8e8e93;
+  opacity: 1;
 }
 
 .clearInputBtn:active {
-  transform: translateY(-50%) scale(0.9);
+  transform: translateY(-50%) scale(0.95);
 }
