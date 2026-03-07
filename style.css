@@ -276,7 +276,7 @@ button:active {
 
   border: none;
   border-radius: 50%;
-  background: #f0f0f0;
+  background: #ffffff;
   color: #747474;
   font-size: 16px;
   font-weight: normal;
@@ -286,10 +286,6 @@ button:active {
   display: none;
   align-items: center;
   justify-content: center;
-}
-
-.clearInputBtn:hover {
-  opacity: 1;
 }
 
 .clearInputBtn:active {
