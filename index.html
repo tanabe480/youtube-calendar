@@ -3,11 +3,15 @@
 
 <head>
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>YouTube配信カレンダー</title>
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
+
 
 <script>
   if ("serviceWorker" in navigator) {
@@ -15,30 +19,33 @@
   }
 </script>
 
+
 <body>
+  <h2>YouTube 配信予定</h2>
+  <h3 class="addChannel">チャンネル追加</h3>
 
-<h2>YouTube 配信予定</h2>
-<h3 class="addChannel">チャンネル追加</h3>
-<div class="searchInputWrap">
-  <input id="channelInput" placeholder="チャンネル名で検索">
-  <button id="clearInputBtn" class="clearInputBtn" type="button">×</button>
-</div>
-<button id="searchBtn">検索</button>
-<ul id="searchResult"></ul>
-<div class="scheduleHeader">
-  <h4 class="liveSchedule">配信予定一覧</h4>
-  <button class="refreshBtn" onclick="fetchAllUpcomingLives()">更新</button>
-</div>
-<div class="liveListBox">
-  <div id="liveList"></div>
-</div>
-<h5 class="addedChannel">登録済チャンネル</h5>
+  <div class="searchInputWrap">
+    <input id="channelInput" placeholder="チャンネル名で検索">
+    <button id="clearInputBtn" class="clearInputBtn" type="button">×</button>
+  </div>
 
-<ul id="channelList"></ul>
+  <button id="searchBtn">検索</button>
+  <ul id="searchResult"></ul>
 
-<script src="config.js"></script>
-<script src="main.js"></script>
+  <div class="scheduleHeader">
+    <h4 class="liveSchedule">配信予定一覧</h4>
+    <button class="refreshBtn" onclick="fetchAllUpcomingLives()">更新</button>
+  </div>
+
+  <div class="liveListBox">
+    <div id="liveList"></div>
+  </div>
+
+  <h5 class="addedChannel">登録済チャンネル</h5>
+  <ul id="channelList"></ul>
+
+  <script src="config.js"></script>
+  <script src="main.js"></script>
 
 </body>
-
 </html>
