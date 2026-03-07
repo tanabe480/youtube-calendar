@@ -25,9 +25,10 @@
 </div>
 <button id="searchBtn">検索</button>
 <ul id="searchResult"></ul>
-<h4 class="liveSchedule">配信予定一覧</h4>
-<div id="liveList"></div>
-<button onclick="fetchAllUpcomingLives()">更新</button>
+<div class="scheduleHeader">
+  <h4 class="liveSchedule">配信予定一覧</h4>
+  <button class="refreshBtn" onclick="fetchAllUpcomingLives()">更新</button>
+</div>
 <h5 class="addedChannel">登録済チャンネル</h5>
 
 <ul id="channelList"></ul>
