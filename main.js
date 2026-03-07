@@ -2,11 +2,11 @@ const STORAGE_KEY = "youtube_channels";
 
 function normalizeText(text) {
   return text
-    .normalize("NFKC")           // 全角半角統一
+    .normalize("NFKC")
     .toLowerCase()
-    .replace(/[・･]/g, "")       // 中点削除
-    .replace(/\s+/g, "")         // 空白削除
-    .replace(/[^\p{L}\p{N}]/gu, ""); // 記号削除（日本語OK）
+    .replace(/[・･]/g, "")
+    .replace(/\s+/g, "")
+    .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
 /* ========= チャンネル検索 ========= */
@@ -75,6 +75,23 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
   const results = await searchChannels(keyword);
   renderSearchResults(results);
 });
+
+const channelInput = document.getElementById("channelInput");
+const clearInputBtn = document.getElementById("clearInputBtn");
+
+function toggleClearButton() {
+  clearInputBtn.style.display = channelInput.value ? "flex" : "none";
+}
+
+channelInput.addEventListener("input", toggleClearButton);
+
+clearInputBtn.addEventListener("click", () => {
+  channelInput.value = "";
+  toggleClearButton();
+  channelInput.focus();
+});
+
+toggleClearButton();
 
 
 /* ========= チャンネル保存 ========= */
