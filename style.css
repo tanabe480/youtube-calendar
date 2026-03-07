@@ -21,7 +21,6 @@ h1, h2, h3 {
 }
 
 h2 {
-  display: inline-block;
   font-size: 28px;
   font-weight: 700;
   color: #3A3A3A;
@@ -341,3 +340,4 @@ button:active {
 .clearInputBtn:active {
   transform: translateY(-50%) scale(0.95);
 }
+
