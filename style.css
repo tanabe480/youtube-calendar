@@ -1,293 +1,41 @@
-/* =========================
-   基本リセット
-========================= */
-* {
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html>
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f6f8;
-  color: #333;
-  padding: 12px;
-}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube配信カレンダー</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
 
-/* =========================
-   レイアウト
-========================= */
-.container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 16px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-
-/* =========================
-   リストの黒丸削除
-========================= */
-ul {
-  list-style: none;
-  padding-left: 0;
-  margin-left: 0;
-}
-
-/* =========================
-   見出し
-========================= */
-h1, h2, h3 {
-  margin-top: 0;
-}
-
-/* =========================
-   フォーム
-========================= */
-label {
-  display: block;
-  margin-top: 14px;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-/* 入力欄共通 */
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px; /* iPhoneズーム防止 */
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
-}
-
-/* メモ欄 */
-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-/* =========================
-   ボタン
-========================= */
-button {
-  width: 100%;
-  margin-top: 18px;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 14px;
-  background-color: #4285f4;
-  color: white;
-  cursor: pointer;
-  transition: transform 0.05s ease, opacity 0.2s;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* =========================
-   カード表示（検索結果など）
-========================= */
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-}
-
-/* =========================
-   スマホ最適化
-========================= */
-@media (max-width: 480px) {
-  body {
-    font-size: 15px;
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
   }
-}
+</script>
 
-/* =========================
-   タブレット以上
-========================= */
-@media (min-width: 768px) {
-  .container {
-    margin-top: 30px;
-  }
-}
+<body>
 
-/* ===============================
-   リスト共通レイアウト
-================================ */
-#searchResult li,
-#channelList li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 0;
-}
+<h2>YouTube 配信予定</h2>
+<h3 class="addChannel">チャンネル追加</h3>
+<div class="searchInputWrap">
+  <input id="channelInput" placeholder="チャンネル名で検索">
+  <button id="clearInputBtn" class="clearInputBtn" type="button">×</button>
+</div>
+<button id="searchBtn">検索</button>
+<ul id="searchResult"></ul>
+<div class="scheduleHeader">
+  <h4 class="liveSchedule">配信予定一覧</h4>
+  <button class="refreshBtn" onclick="fetchAllUpcomingLives()">更新</button>
+</div>
+<h5 class="addedChannel">登録済チャンネル</h5>
 
-/* ===============================
-   チャンネルアイコン
-================================ */
-#searchResult img,
-#channelList img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;   /* 丸アイコン */
-  flex-shrink: 0;
-}
+<ul id="channelList"></ul>
 
-/* ===============================
-   チャンネル名
-================================ */
-#searchResult li span,
-#channelList li span {
-  flex: 1;              /* ← 余白を全部取る */
-  font-size: 16px;
-  font-weight: 500;
-  min-width: 0;         /* ← 超重要（文字折り返しバグ防止） */
-}
+<script src="config.js"></script>
+<script src="main.js"></script>
 
+</body>
 
-#searchResult button:active,
-#channelList button:active {
-  transform: scale(0.96);
-}
-
-#searchResult button,
-#channelList button {
-  padding: 8px 14px;
-  font-size: 14px;
-  border-radius: 14px;
-  border: none;
-  color: white;
-  cursor: pointer;
-
-  flex-shrink: 0;   /* ← 押しつぶされない */
-}
-
-/* ===============================
-   リスト内ボタンだけ右寄せ化
-================================ */
-#searchResult li button,
-#channelList li button {
-  width: auto;
-  min-width: 68px;
-  height: 36px;
-  margin-top: 0;
-  margin-left: auto;
-  padding: 0 14px;
-  font-size: 14px;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ===============================
-   配信予定カード
-================================ */
-.liveCard {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  padding: 12px 14px;
-  margin: 8px 0;
-}
-
-/* 日時 */
-.liveDate {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.liveTitle {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-/* チャンネル名 */
-.liveChannel {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-/* 下の操作エリア */
-.liveActions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-}
-
-/* カレンダーボタンをカード内用に調整（既存のボタンを壊さない） */
-.liveCard .calendarBtn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px 12px;
-  font-size: 14px;
-  border-radius: 10px;
-}
-
-.liveSchedule {
-  font-size: 18px;
-  margin: 10px 0 2px;
-}
-.addChannel {
-  font-size: 18px;
-}
-.addedChannel {
-  font-size: 18px;
-}
-
-.searchInputWrap {
-  position: relative;
-}
-
-#channelInput {
-  padding-right: 40px;
-}
-
-/* チャンネル検索欄 */
-.clearInputBtn {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  margin: 0;
-  padding: 0;
-
-  border: none;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #747474;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 1;
-  cursor: pointer;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.clearInputBtn:active {
-  transform: translateY(-50%) scale(0.95);
-}
+</html>
