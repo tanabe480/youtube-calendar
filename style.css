@@ -260,6 +260,7 @@ button:active {
 }
 
 .liveEmpty {
+  width: 100%;             /*　★これを追加した　*/
   text-align: center;
   padding: 16px;
   color: #6b7280;
@@ -331,7 +332,7 @@ button:active {
 
   border: none;
   border-radius: 50%;
-  background: #e5e7eb;
+  background: #ffffff;
   color: #747474;
   font-size: 16px;
   font-weight: normal;
