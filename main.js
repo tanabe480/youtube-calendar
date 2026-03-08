@@ -1,4 +1,12 @@
 const STORAGE_KEY = "youtube_channels";
+const SEARCH_CACHE_KEY = "youtube_search_cache";
+const LIVE_CACHE_KEY = "youtube_live_cache";
+
+const SEARCH_CACHE_TTL = 1000 * 60 * 60 * 24; // 24時間
+const LIVE_CACHE_TTL = 1000 * 60 * 10; // 10分
+const REFRESH_COOLDOWN = 5000; // 5秒
+
+let isRefreshing = false;
 
 function normalizeText(text) {
   return text
@@ -9,8 +17,35 @@ function normalizeText(text) {
     .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
+/* ========= キャッシュ共通 ========= */
+function loadCache(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCache(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function isFresh(timestamp, ttl) {
+  return Date.now() - timestamp < ttl;
+}
+
 /* ========= チャンネル検索 ========= */
 async function searchChannels(keyword) {
+  const normalizedKeyword = normalizeText(keyword);
+  const cache = loadCache(SEARCH_CACHE_KEY);
+
+  if (
+    cache[normalizedKeyword] &&
+    isFresh(cache[normalizedKeyword].timestamp, SEARCH_CACHE_TTL)
+  ) {
+    return cache[normalizedKeyword].items;
+  }
+
   const url =
     `https://www.googleapis.com/youtube/v3/search` +
     `?part=snippet&type=channel&q=${encodeURIComponent(keyword)}` +
@@ -19,47 +54,58 @@ async function searchChannels(keyword) {
   const res = await fetch(url);
 
   if (!res.ok) {
-    console.error("Channel search API error");
+    const errorText = await res.text();
+    console.error("Channel search API error:", res.status, errorText);
     return [];
   }
 
   const data = await res.json();
   if (!data.items) return [];
 
-  // 正規化した検索ワード
-  const normalizedKeyword = normalizeText(keyword);
-
-  return data.items
+  const items = data.items
     .map(item => ({
       channelId: item.id.channelId,
       title: item.snippet.title,
-      thumbnail: item.snippet.thumbnails.default.url
+      thumbnail: item.snippet.thumbnails?.default?.url || ""
     }))
-    .filter(ch =>
-      normalizeText(ch.title).includes(normalizedKeyword)
-    );
-}
+    .filter(ch => normalizeText(ch.title).includes(normalizedKeyword));
 
+  cache[normalizedKeyword] = {
+    timestamp: Date.now(),
+    items
+  };
+  saveCache(SEARCH_CACHE_KEY, cache);
+
+  return items;
+}
 
 /* ========= 検索結果表示 ========= */
 function renderSearchResults(results) {
   const ul = document.getElementById("searchResult");
   ul.innerHTML = "";
 
+  if (results.length === 0) {
+    ul.innerHTML = `<li class="liveEmpty">検索結果がありません</li>`;
+    return;
+  }
+
   results.forEach(ch => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <img src="${ch.thumbnail}" width="32">
-      ${ch.title}
+      <img src="${ch.thumbnail}" width="32" alt="">
+      <span>${ch.title}</span>
     `;
 
     const btn = document.createElement("button");
     btn.textContent = "追加";
-    btn.onclick = () => {
-      addChannel(ch);
+    btn.onclick = async () => {
+      const added = addChannel(ch);
       renderChannelList();
-      fetchAllUpcomingLives();
+
+      if (added) {
+        await fetchAllUpcomingLives({ force: false });
+      }
     };
 
     li.appendChild(btn);
@@ -93,7 +139,6 @@ clearInputBtn.addEventListener("click", () => {
 
 toggleClearButton();
 
-
 /* ========= チャンネル保存 ========= */
 function getChannels() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -106,21 +151,27 @@ function saveChannels(channels) {
 function addChannel(channel) {
   const channels = getChannels();
 
-  if (!channels.find(c => c.id === channel.channelId)) {
-    channels.push({
-      id: channel.channelId,
-      title: channel.title,
-      thumbnail: channel.thumbnail
-    });
-    saveChannels(channels);
+  if (channels.find(c => c.id === channel.channelId)) {
+    return false;
   }
+
+  channels.push({
+    id: channel.channelId,
+    title: channel.title,
+    thumbnail: channel.thumbnail
+  });
+  saveChannels(channels);
+  return true;
 }
 
 function removeChannel(channelId) {
   const channels = getChannels().filter(c => c.id !== channelId);
   saveChannels(channels);
-}
 
+  const liveCache = loadCache(LIVE_CACHE_KEY);
+  delete liveCache[channelId];
+  saveCache(LIVE_CACHE_KEY, liveCache);
+}
 
 /* ========= チャンネル一覧表示 ========= */
 function renderChannelList() {
@@ -129,12 +180,17 @@ function renderChannelList() {
 
   const channels = getChannels();
 
+  if (channels.length === 0) {
+    ul.innerHTML = `<li class="liveEmpty">登録済みチャンネルはありません</li>`;
+    return;
+  }
+
   channels.forEach(ch => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <img src="${ch.thumbnail}" width="24">
-      ${ch.title}
+      <img src="${ch.thumbnail}" width="24" alt="">
+      <span>${ch.title}</span>
     `;
 
     const btn = document.createElement("button");
@@ -142,7 +198,9 @@ function renderChannelList() {
     btn.onclick = () => {
       removeChannel(ch.id);
       renderChannelList();
-      fetchAllUpcomingLives();
+
+      // API再取得せず、残っているキャッシュだけで再描画
+      renderLivesFromCacheOnly();
     };
 
     li.appendChild(btn);
@@ -151,9 +209,17 @@ function renderChannelList() {
 }
 
 /* ========= 配信予定取得 ========= */
-async function fetchUpcomingByChannel(channelId) {
+async function fetchUpcomingByChannel(channelId, { force = false } = {}) {
+  const liveCache = loadCache(LIVE_CACHE_KEY);
 
-  // upcoming検索
+  if (
+    !force &&
+    liveCache[channelId] &&
+    isFresh(liveCache[channelId].timestamp, LIVE_CACHE_TTL)
+  ) {
+    return liveCache[channelId].items;
+  }
+
   const searchUrl =
     `https://www.googleapis.com/youtube/v3/search` +
     `?part=snippet&type=video&eventType=upcoming` +
@@ -162,9 +228,14 @@ async function fetchUpcomingByChannel(channelId) {
   const searchRes = await fetch(searchUrl);
 
   if (!searchRes.ok) {
-  const errorText = await searchRes.text();
-  console.error("Search API error:", searchRes.status, channelId, errorText);
-  return [];
+    const errorText = await searchRes.text();
+    console.error("Search API error:", searchRes.status, channelId, errorText);
+
+    // 失敗時は古いキャッシュがあればそれを返す
+    if (liveCache[channelId]?.items) {
+      return liveCache[channelId].items;
+    }
+    return [];
   }
 
   const searchData = await searchRes.json();
@@ -172,11 +243,18 @@ async function fetchUpcomingByChannel(channelId) {
 
   const videoIds = searchData.items
     .map(item => item.id.videoId)
+    .filter(Boolean)
     .join(",");
 
-  if (!videoIds) return [];
+  if (!videoIds) {
+    liveCache[channelId] = {
+      timestamp: Date.now(),
+      items: []
+    };
+    saveCache(LIVE_CACHE_KEY, liveCache);
+    return [];
+  }
 
-  // 正確な配信時間取得
   const videoUrl =
     `https://www.googleapis.com/youtube/v3/videos` +
     `?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`;
@@ -184,67 +262,100 @@ async function fetchUpcomingByChannel(channelId) {
   const videoRes = await fetch(videoUrl);
 
   if (!videoRes.ok) {
-    console.error("Videos API error");
+    const errorText = await videoRes.text();
+    console.error("Videos API error:", videoRes.status, channelId, errorText);
+
+    if (liveCache[channelId]?.items) {
+      return liveCache[channelId].items;
+    }
     return [];
   }
 
   const videoData = await videoRes.json();
 
-  return videoData.items
+  const items = (videoData.items || [])
     .filter(v => v.liveStreamingDetails?.scheduledStartTime)
     .map(video => ({
       title: video.snippet.title,
       channelTitle: video.snippet.channelTitle,
       videoId: video.id,
-      startTime: video.liveStreamingDetails.scheduledStartTime
+      startTime: video.liveStreamingDetails.scheduledStartTime,
+      channelId
     }));
+
+  liveCache[channelId] = {
+    timestamp: Date.now(),
+    items
+  };
+  saveCache(LIVE_CACHE_KEY, liveCache);
+
+  return items;
 }
 
-/* ========= 全チャンネルまとめ（並列取得版） ========= */
-async function fetchAllUpcomingLives() {
+/* ========= キャッシュだけで表示 ========= */
+function renderLivesFromCacheOnly() {
+  const channels = getChannels();
+  const channelIds = new Set(channels.map(ch => ch.id));
+  const liveCache = loadCache(LIVE_CACHE_KEY);
+
+  let allLives = Object.entries(liveCache)
+    .filter(([channelId]) => channelIds.has(channelId))
+    .flatMap(([, value]) => value.items || []);
+
+  allLives.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+  renderLives(allLives);
+}
+
+/* ========= 全チャンネルまとめ ========= */
+async function fetchAllUpcomingLives({ force = false } = {}) {
   const area = document.getElementById("liveList");
   area.innerHTML = "読み込み中…";
 
   const channels = getChannels();
 
   if (channels.length === 0) {
-    area.innerHTML = `
-    <div class="liveEmpty">
-      配信予定はありません
-    </div>
-    `;
+    area.innerHTML = `<div class="liveEmpty">配信予定はありません</div>`;
     return;
   }
 
   try {
-    // 並列取得（高速化）
     const results = await Promise.all(
-      channels.map(ch => fetchUpcomingByChannel(ch.id))
+      channels.map(ch => fetchUpcomingByChannel(ch.id, { force }))
     );
 
     let allLives = results.flat();
 
-    // 開始時間順
-    allLives.sort(
-      (a, b) => new Date(a.startTime) - new Date(b.startTime)
-    );
-
+    allLives.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
     renderLives(allLives);
-
   } catch (e) {
     console.error(e);
     area.textContent = "取得中にエラーが発生しました";
   }
 }
 
+/* ========= 更新ボタン用 ========= */
+async function refreshUpcomingLives() {
+  if (isRefreshing) return;
+
+  isRefreshing = true;
+  const refreshBtn = document.getElementById("refreshBtn");
+  if (refreshBtn) refreshBtn.disabled = true;
+
+  try {
+    await fetchAllUpcomingLives({ force: true });
+  } finally {
+    setTimeout(() => {
+      isRefreshing = false;
+      if (refreshBtn) refreshBtn.disabled = false;
+    }, REFRESH_COOLDOWN);
+  }
+}
+
 /* ========= ICS生成 ========= */
 function createICS(live) {
   const start = new Date(live.startTime);
-
-  // 配信1時間と仮定（後で変更可）
   const end = new Date(start.getTime() + 60 * 60 * 1000);
 
-  // YYYYMMDDTHHMMSSZ 形式に変換
   const formatDate = (date) =>
     date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
@@ -280,14 +391,13 @@ function downloadICS(live) {
   URL.revokeObjectURL(url);
 }
 
-
 /* ========= 表示 ========= */
 function renderLives(lives) {
   const area = document.getElementById("liveList");
   area.innerHTML = "";
 
   if (lives.length === 0) {
-    area.textContent = "配信予定はありません";
+    area.innerHTML = `<div class="liveEmpty">配信予定はありません</div>`;
     return;
   }
 
@@ -309,12 +419,10 @@ function renderLives(lives) {
       <div class="liveDate">${dateStr}</div>
       <div class="liveTitle">${live.title}</div>
       <div class="liveChannel">${live.channelTitle}</div>
-
-        <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
-          ▶ YouTubeで見る
-        </a>
-        <button class="calendarBtn">📅 カレンダー追加</button>
-
+      <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
+        ▶ YouTubeで見る
+      </a>
+      <button class="calendarBtn">📅 カレンダー追加</button>
     `;
 
     card.querySelector(".calendarBtn")
@@ -326,4 +434,9 @@ function renderLives(lives) {
 
 /* ========= 初期実行 ========= */
 renderChannelList();
-fetchAllUpcomingLives();
+renderLivesFromCacheOnly();
+
+const refreshBtn = document.getElementById("refreshBtn");
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", refreshUpcomingLives);
+}
