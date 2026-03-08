@@ -98,7 +98,7 @@ function renderSearchResults(results) {
     `;
 
     const btn = document.createElement("button");
-    btn.textContent = "追加";
+    btn.textContent = "登録";
     btn.onclick = async () => {
       const added = addChannel(ch);
       renderChannelList();
