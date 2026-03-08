@@ -249,7 +249,7 @@ button:active {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
   padding: 12px 14px;
   margin: 8px 0;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #ebeae5;
 }
 
 .liveListBox {
@@ -271,7 +271,7 @@ button:active {
 .liveDate {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 6px;  
 }
 
 .liveTitle {
