@@ -342,6 +342,8 @@ button:active {
   display: none;
   align-items: center;
   justify-content: center;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 .clearInputBtn:active {
