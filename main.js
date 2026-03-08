@@ -274,14 +274,23 @@ async function fetchUpcomingByChannel(channelId, { force = false } = {}) {
   const videoData = await videoRes.json();
 
   const items = (videoData.items || [])
-    .filter(v => v.liveStreamingDetails?.scheduledStartTime)
-    .map(video => ({
-      title: video.snippet.title,
-      channelTitle: video.snippet.channelTitle,
-      videoId: video.id,
-      startTime: video.liveStreamingDetails.scheduledStartTime,
-      channelId
-    }));
+  .filter(v => {
+    const details = v.liveStreamingDetails;
+    if (!details?.scheduledStartTime) return false;
+
+    // 終了済み配信は除外
+    if (details.actualEndTime) return false;
+
+    return true;
+  })
+  .map(video => ({
+    title: video.snippet.title,
+    channelTitle: video.snippet.channelTitle,
+    videoId: video.id,
+    startTime: video.liveStreamingDetails.scheduledStartTime,
+    channelId,
+    isLive: !!video.liveStreamingDetails.actualStartTime
+  }));
 
   liveCache[channelId] = {
     timestamp: Date.now(),
