@@ -1,6 +1,6 @@
 {
-  "name": "YouTube配信カレンダー",
-  "short_name": "配信カレンダー",
+  "name": "YouTube配信予定カレンダー登録アプリ",
+  "short_name": "配信予定登録",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
