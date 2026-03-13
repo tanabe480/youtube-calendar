@@ -115,13 +115,16 @@ button {
   cursor: pointer;
   transition: transform 0.05s ease, opacity 0.2s;
 }
-
 button:hover {
   opacity: 0.9;
 }
-
 button:active {
   transform: scale(0.98);
+}
+
+/*  検索ボタン  */
+#searchBtn {
+  margin-top: 6px;
 }
 
 /*  配信予定一覧  */
@@ -349,4 +352,3 @@ button:active {
 .clearInputBtn:active {
   transform: translateY(-50%) scale(0.95);
 }
-
