@@ -253,7 +253,7 @@ button:active {
 }
 
 .liveListBox {
-  background: #f9fafb;
+  background: #f3f4f6;
   border-radius: 14px;
   padding: 14px;
   margin: 10px 0 20px;
@@ -349,3 +349,4 @@ button:active {
 .clearInputBtn:active {
   transform: translateY(-50%) scale(0.95);
 }
+
