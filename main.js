@@ -1,6 +1,7 @@
 const STORAGE_KEY = "youtube_channels";
 const SEARCH_CACHE_KEY = "youtube_search_cache";
 const LIVE_CACHE_KEY = "youtube_live_cache";
+const LAST_RENDERED_LIVES_KEY = "youtube_last_rendered_lives";
 
 const SEARCH_CACHE_TTL = 1000 * 60 * 60 * 24; // 24時間
 const LIVE_CACHE_TTL = 1000 * 60 * 10; // 10分
@@ -32,6 +33,18 @@ function saveCache(key, value) {
 
 function isFresh(timestamp, ttl) {
   return Date.now() - timestamp < ttl;
+}
+
+/* 閉じる前のキャッシュを保存 */
+function saveLastRenderedLives(lives) {
+  localStorage.setItem(LAST_RENDERED_LIVES_KEY, JSON.stringify(lives));
+}
+function getLastRenderedLives() {
+  try {
+    return JSON.parse(localStorage.getItem(LAST_RENDERED_LIVES_KEY)) || [];
+  } catch {
+    return [];
+  }
 }
 
 /* ========= チャンネル検索 ========= */
@@ -402,6 +415,7 @@ function downloadICS(live) {
 
 /* ========= 表示 ========= */
 function renderLives(lives) {
+  saveLastRenderedLives(lives);
   const area = document.getElementById("liveList");
   area.innerHTML = "";
 
@@ -429,7 +443,7 @@ function renderLives(lives) {
       <div class="liveTitle">${live.title}</div>
       <div class="liveChannel">${live.channelTitle}</div>
       <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
-        ▶ YouTubeで見る
+        ▷ YouTubeで見る
       </a>
       <button class="calendarBtn">📅 カレンダー追加</button>
     `;
@@ -443,7 +457,7 @@ function renderLives(lives) {
 
 /* ========= 初期実行 ========= */
 renderChannelList();
-renderLivesFromCacheOnly();
+renderLives(getLastRenderedLives());
 
 const refreshBtn = document.getElementById("refreshBtn");
 if (refreshBtn) {
