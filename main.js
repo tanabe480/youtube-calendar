@@ -443,7 +443,7 @@ function renderLives(lives) {
       <div class="liveTitle">${live.title}</div>
       <div class="liveChannel">${live.channelTitle}</div>
       <a class="liveLink" href="https://www.youtube.com/watch?v=${live.videoId}" target="_blank" rel="noopener">
-        ▷ YouTubeで見る
+        ▷YouTubeで見る
       </a>
       <button class="calendarBtn">📅 カレンダー追加</button>
     `;
