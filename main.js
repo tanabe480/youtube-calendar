@@ -8,6 +8,7 @@ const LIVE_CACHE_TTL = 1000 * 60 * 10; // 10分
 const REFRESH_COOLDOWN = 5000; // 5秒
 
 let isRefreshing = false;
+let currentSearchResults = [];
 
 function normalizeText(text) {
   return text
@@ -94,6 +95,7 @@ async function searchChannels(keyword) {
 
 /* ========= 検索結果表示 ========= */
 function renderSearchResults(results) {
+  currentSearchResults = results;
   const ul = document.getElementById("searchResult");
   ul.innerHTML = "";
 
@@ -101,7 +103,6 @@ function renderSearchResults(results) {
     ul.innerHTML = `<li class="liveEmpty">検索結果がありません</li>`;
     return;
   }
-
   results.forEach(ch => {
     const li = document.createElement("li");
 
@@ -111,7 +112,11 @@ function renderSearchResults(results) {
     `;
 
     const btn = document.createElement("button");
-    btn.textContent = "登録";
+    const registered = isRegisteredChannel(ch.channelId);
+
+    btn.textContent = registered ? "登録済" : "登録";
+    btn.disabled = registered;
+
     btn.onclick = async () => {
       const added = addChannel(ch);
       renderChannelList();
@@ -119,6 +124,9 @@ function renderSearchResults(results) {
       if (added) {
         await fetchAllUpcomingLives({ force: false });
       }
+
+      // 検索結果も更新
+      renderSearchResults(currentSearchResults);
     };
 
     li.appendChild(btn);
@@ -159,6 +167,10 @@ function getChannels() {
 
 function saveChannels(channels) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(channels));
+}
+
+function isRegisteredChannel(channelId) {
+  return getChannels().some(c => c.id === channelId);
 }
 
 function addChannel(channel) {
@@ -214,6 +226,9 @@ function renderChannelList() {
 
       // API再取得せず、残っているキャッシュだけで再描画
       renderLivesFromCacheOnly();
+
+      // 検索結果のボタン表示も更新
+      renderSearchResults(currentSearchResults);
     };
 
     li.appendChild(btn);
@@ -381,6 +396,7 @@ function createICS(live) {
   const formatDate = (date) =>
     date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
+  /* ※インデントそろえるとエラーになる */
   const icsContent =
 `BEGIN:VCALENDAR
 VERSION:2.0
@@ -392,16 +408,13 @@ DESCRIPTION:${live.channelTitle}
 URL:https://www.youtube.com/watch?v=${live.videoId}
 END:VEVENT
 END:VCALENDAR`;
-
   return icsContent;
 }
 
 function downloadICS(live) {
   const ics = createICS(live);
-
   const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
   a.download = "youtube_live.ics";
@@ -433,7 +446,6 @@ function renderLives(lives) {
     const w = week[start.getDay()];
     const hh = start.getHours().toString().padStart(2, "0");
     const mm = start.getMinutes().toString().padStart(2, "0");
-
     const dateStr = `${y}年${m}月${d}日(${w}) ${hh}:${mm}`;
     const card = document.createElement("div");
     card.className = "liveCard";
