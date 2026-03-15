@@ -191,7 +191,7 @@ button:active {
 #channelList img {
   width: 48px;
   height: 48px;
-  border-radius: 50%;   /* 丸アイコン */
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
@@ -200,10 +200,10 @@ button:active {
 ================================ */
 #searchResult li span,
 #channelList li span {
-  flex: 1;              /* ← 余白を全部取る */
+  flex: 1;
   font-size: 16px;
   font-weight: 500;
-  min-width: 0;         /* ← 超重要（文字折り返しバグ防止） */
+  min-width: 0;
 }
 
 
@@ -221,7 +221,7 @@ button:active {
   color: white;
   cursor: pointer;
 
-  flex-shrink: 0;   /* ← 押しつぶされない */
+  flex-shrink: 0;
 }
 
 /* ===============================
@@ -263,7 +263,7 @@ button:active {
 }
 
 .liveEmpty {
-  width: 100%;             /*　★これを追加した　*/
+  width: 100%;
   text-align: center;
   padding: 16px;
   color: #6b7280;
@@ -290,7 +290,7 @@ button:active {
   margin-bottom: 5px;
 }
 
-/* カレンダーボタンをカード内用に調整（既存のボタンを壊さない） */
+/* カレンダーボタンをカード内用に調整 */
 .liveCard .calendarBtn {
   width: 100%;
   margin-top: 10px;
